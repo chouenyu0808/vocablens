@@ -36,10 +36,10 @@ export default function Heatmap() {
       <div style={{ display: "flex", flexWrap: "wrap", gap: "6px" }}>
         {days.map((dateStr) => {
           const count = data[dateStr] || 0;
-          let bgColor = "rgba(255, 255, 255, 0.05)"; // Empty
-          if (count > 0 && count < 5) bgColor = "rgba(16, 185, 129, 0.3)";
-          else if (count >= 5 && count < 15) bgColor = "rgba(16, 185, 129, 0.6)";
-          else if (count >= 15) bgColor = "rgba(16, 185, 129, 1)"; // Max color
+          let bgColor = "var(--card-border)"; // Empty
+          if (count > 0 && count < 5) bgColor = "rgba(52, 199, 89, 0.3)";
+          else if (count >= 5 && count < 15) bgColor = "rgba(52, 199, 89, 0.6)";
+          else if (count >= 15) bgColor = "rgba(52, 199, 89, 1)"; // Max color
 
           return (
             <div
@@ -61,10 +61,10 @@ export default function Heatmap() {
       </div>
       <div style={{ display: "flex", gap: "8px", alignItems: "center", fontSize: "0.8rem", color: "var(--text-secondary)", marginTop: "8px" }}>
         <span>Less</span>
-        <div style={{ width: "12px", height: "12px", borderRadius: "3px", background: "rgba(255, 255, 255, 0.05)" }} />
-        <div style={{ width: "12px", height: "12px", borderRadius: "3px", background: "rgba(16, 185, 129, 0.3)" }} />
-        <div style={{ width: "12px", height: "12px", borderRadius: "3px", background: "rgba(16, 185, 129, 0.6)" }} />
-        <div style={{ width: "12px", height: "12px", borderRadius: "3px", background: "rgba(16, 185, 129, 1)" }} />
+        <div style={{ width: "12px", height: "12px", borderRadius: "3px", background: "var(--card-border)" }} />
+        <div style={{ width: "12px", height: "12px", borderRadius: "3px", background: "rgba(52, 199, 89, 0.3)" }} />
+        <div style={{ width: "12px", height: "12px", borderRadius: "3px", background: "rgba(52, 199, 89, 0.6)" }} />
+        <div style={{ width: "12px", height: "12px", borderRadius: "3px", background: "rgba(52, 199, 89, 1)" }} />
         <span>More</span>
       </div>
     </div>

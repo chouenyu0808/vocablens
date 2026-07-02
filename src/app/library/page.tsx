@@ -51,8 +51,8 @@ export default function LibraryPage() {
       ) : (
         <div className="responsive-grid">
           {words.map((w) => (
-            <div key={w.id} className="glass-panel" style={{ padding: "20px", display: "flex", flexDirection: "column", justifyContent: "space-between" }}>
-              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "12px" }}>
+            <div key={w.id} className="glass-panel glass-card" style={{ padding: "24px", display: "flex", flexDirection: "column", justifyContent: "space-between" }}>
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "16px" }}>
                 <div>
                   <div style={{ fontWeight: "bold", fontSize: "1.4rem", color: "var(--accent-color)", display: "flex", alignItems: "center", gap: "8px" }}>
                     {w.word}

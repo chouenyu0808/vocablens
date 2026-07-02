@@ -166,9 +166,20 @@ export default function QuizPage() {
 
   return (
     <main className="app-container animate-fade-in">
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "24px" }}>
-        <div style={{ color: "var(--text-secondary)" }}>Question {currentIndex + 1} of {TOTAL_QUESTIONS}</div>
-        <Link href="/"><button className="btn-secondary" style={{ padding: "8px 16px" }}>Quit</button></Link>
+      {/* Progress Bar */}
+      <div style={{ marginBottom: "24px" }}>
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "12px" }}>
+          <div style={{ color: "var(--text-secondary)", fontWeight: "500" }}>Question {currentIndex + 1} <span style={{ opacity: 0.5 }}>/ {TOTAL_QUESTIONS}</span></div>
+          <Link href="/"><button className="btn-secondary" style={{ padding: "6px 16px", fontSize: "0.9rem" }}>Quit</button></Link>
+        </div>
+        <div style={{ width: "100%", height: "4px", background: "var(--card-border)", borderRadius: "2px", overflow: "hidden" }}>
+          <div style={{ 
+            width: `${((currentIndex + 1) / TOTAL_QUESTIONS) * 100}%`, 
+            height: "100%", 
+            background: "var(--accent-color)", 
+            transition: "width 0.4s ease" 
+          }} />
+        </div>
       </div>
 
       <div className="glass-panel" style={{ padding: "40px 20px", textAlign: "center", marginBottom: "32px", minHeight: "160px", display: "flex", flexDirection: "column", justifyContent: "center" }}>
@@ -198,15 +209,18 @@ export default function QuizPage() {
 
       <div className="responsive-grid" style={{ gap: "16px" }}>
         {q.options.map((opt) => {
-          let bgColor = "rgba(255, 255, 255, 0.05)";
+          let bgColor = "var(--card-border)";
           let borderColor = "var(--card-border)";
+          let animationClass = "";
           if (selectedId) {
             if (opt.id === q.correctOptionId) {
-              bgColor = "rgba(16, 185, 129, 0.2)";
+              bgColor = "rgba(52, 199, 89, 0.1)";
               borderColor = "var(--success-color)";
+              if (opt.id === selectedId) animationClass = "pulse-success";
             } else if (opt.id === selectedId) {
-              bgColor = "rgba(239, 68, 68, 0.2)";
+              bgColor = "rgba(255, 59, 48, 0.1)";
               borderColor = "var(--error-color)";
+              animationClass = "pulse-error";
             }
           }
 
@@ -214,19 +228,20 @@ export default function QuizPage() {
             <button
               key={opt.id}
               onClick={() => handleSelect(opt.id)}
-              className="glass-panel"
+              className={`glass-panel glass-card ${animationClass ? `animate-[${animationClass}_1s_ease-out]` : ''}`}
               style={{
                 padding: "24px",
                 fontSize: "1.2rem",
+                fontWeight: "500",
                 textAlign: "center",
                 background: bgColor,
                 borderColor: borderColor,
-                transition: "all 0.2s ease",
                 cursor: selectedId ? "default" : "pointer",
                 height: "100%",
                 display: "flex",
                 alignItems: "center",
-                justifyContent: "center"
+                justifyContent: "center",
+                animation: animationClass ? `${animationClass} 1s ease-out` : "none"
               }}
               disabled={!!selectedId}
             >
