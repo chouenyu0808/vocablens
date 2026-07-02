@@ -1,0 +1,21 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Word {
+  id            String   @id @default(cuid())
+  word          String   @unique
+  pronunciation String?
+  translation   String?
+  createdAt     DateTime @default(now())
+  lastReviewed  DateTime @default(now())
+  masteryLevel  Int      @default(0) // 0: new, 1: learning, 2: mastered
+}
