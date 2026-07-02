@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { prisma } from "@/lib/prisma";
 import UploadSection from "./components/UploadSection";
+import Heatmap from "./components/Heatmap";
 
 export const dynamic = "force-dynamic"; // Ensure fresh stats
 
@@ -12,37 +13,41 @@ export default async function Home() {
 
   return (
     <main className="app-container animate-fade-in">
-      <h1 className="page-title" style={{ marginTop: "2rem" }}>VocabLens</h1>
+      <h1 className="page-title" style={{ textAlign: "center" }}>VocabLens</h1>
       
-      <div className="responsive-grid">
-        <div style={{ display: "flex", flexDirection: "column", gap: "24px" }}>
-          <div className="glass-panel" style={{ padding: "30px", display: "flex", justifyContent: "space-around", textAlign: "center", flex: 1, alignItems: "center" }}>
-            <div>
-              <div style={{ fontSize: "3rem", fontWeight: "bold", color: "var(--accent-color)" }}>
-                {totalWords}
-              </div>
-              <div style={{ color: "var(--text-secondary)", fontSize: "1.1rem" }}>Total Words</div>
-            </div>
-            <div>
-              <div style={{ fontSize: "3rem", fontWeight: "bold", color: "var(--success-color)" }}>
-                {masteredWords}
-              </div>
-              <div style={{ color: "var(--text-secondary)", fontSize: "1.1rem" }}>Mastered</div>
-            </div>
+      <div className="responsive-grid" style={{ marginBottom: "2rem" }}>
+        <div className="glass-panel" style={{ padding: "24px", textAlign: "center" }}>
+          <div style={{ fontSize: "2.5rem", fontWeight: "700", color: "var(--accent-color)" }}>
+            {totalWords}
           </div>
-
-          <div style={{ display: "flex", gap: "16px" }}>
-            <Link href="/library" style={{ flex: 1 }}>
-              <button className="btn-secondary" style={{ width: "100%", padding: "16px", fontSize: "1.1rem" }}>📚 Vocabulary Library</button>
-            </Link>
-            <Link href="/quiz" style={{ flex: 1 }}>
-              <button className="btn-primary" style={{ width: "100%", padding: "16px", fontSize: "1.1rem" }}>🎯 Start Quiz</button>
-            </Link>
-          </div>
+          <div style={{ color: "var(--text-secondary)", fontSize: "0.9rem" }}>Total Words</div>
         </div>
-
-        <UploadSection />
+        
+        <div className="glass-panel" style={{ padding: "24px", textAlign: "center" }}>
+          <div style={{ fontSize: "2.5rem", fontWeight: "700", color: "var(--success-color)" }}>
+            {masteredWords}
+          </div>
+          <div style={{ color: "var(--text-secondary)", fontSize: "0.9rem" }}>Mastered</div>
+        </div>
       </div>
+
+      <UploadSection />
+
+      <div className="responsive-grid" style={{ marginTop: "2rem", gap: "16px" }}>
+        <Link href="/quiz" style={{ textDecoration: "none" }}>
+          <button className="btn-primary" style={{ width: "100%", padding: "20px", fontSize: "1.2rem" }}>
+            🚀 Start Quiz
+          </button>
+        </Link>
+        
+        <Link href="/library" style={{ textDecoration: "none" }}>
+          <button className="btn-secondary" style={{ width: "100%", padding: "20px", fontSize: "1.2rem" }}>
+            📚 Vocabulary Library
+          </button>
+        </Link>
+      </div>
+
+      <Heatmap />
     </main>
   );
 }

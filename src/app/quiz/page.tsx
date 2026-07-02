@@ -76,11 +76,35 @@ export default function QuizPage() {
     }
   }, [questions.length, isFetchingNext]);
 
-  const handleSelect = (optionId: string) => {
+  const playAudio = (text: string) => {
+    if ("speechSynthesis" in window) {
+      const utterance = new SpeechSynthesisUtterance(text);
+      utterance.lang = "en-US";
+      window.speechSynthesis.speak(utterance);
+    }
+  };
+
+  const handleSelect = async (optionId: string) => {
     if (selectedId) return; // Prevent multiple clicks
     setSelectedId(optionId);
-    if (optionId === questions[currentIndex].correctOptionId) {
+    
+    const isCorrect = optionId === questions[currentIndex].correctOptionId;
+    if (isCorrect) {
       setScore((s) => s + 1);
+    }
+
+    // Submit SRS result to backend
+    try {
+      await fetch("/api/quiz/submit", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          wordId: questions[currentIndex].id,
+          isCorrect: isCorrect,
+        }),
+      });
+    } catch (err) {
+      console.error("Failed to submit SRS", err);
     }
   };
 
@@ -134,6 +158,11 @@ export default function QuizPage() {
   }
 
   const q = questions[currentIndex];
+  // Determine the word to speak. Since the prompt could be translating, we guess the English word might be in the question or options. 
+  // However, we don't strictly have "the word string" in Question type. We'll pass q.question or the correct option to speech. 
+  // Actually, we do have "question text" which contains the word, but it might be mixed with Chinese.
+  // We can just add a simple button for pronunciation using q.question, but it's better to just speak the word if we had it.
+  // The user sees the question. We'll add TTS to the question text.
 
   return (
     <main className="app-container animate-fade-in">
@@ -143,10 +172,26 @@ export default function QuizPage() {
       </div>
 
       <div className="glass-panel" style={{ padding: "40px 20px", textAlign: "center", marginBottom: "32px", minHeight: "160px", display: "flex", flexDirection: "column", justifyContent: "center" }}>
-        <h2 style={{ fontSize: "2rem", fontWeight: "600", marginBottom: "12px" }}>{q.question}</h2>
+        <div style={{ display: "flex", justifyContent: "center", alignItems: "center", gap: "12px", marginBottom: "12px" }}>
+          <h2 style={{ fontSize: "2rem", fontWeight: "600", margin: 0 }}>{q.question}</h2>
+        </div>
+        
         {q.pronunciation && (
-          <div style={{ height: "1.5rem" }}>
-            {selectedId && <p className="animate-fade-in" style={{ color: "var(--accent-color)", fontSize: "1.2rem" }}>{q.pronunciation}</p>}
+          <div style={{ height: "1.5rem", display: "flex", justifyContent: "center", alignItems: "center", gap: "8px" }}>
+            {selectedId && (
+              <>
+                <p className="animate-fade-in" style={{ color: "var(--accent-color)", fontSize: "1.2rem", margin: 0 }}>{q.pronunciation}</p>
+                {/* 🔊 TTS Button visible after answering */}
+                <button 
+                  className="animate-fade-in"
+                  onClick={() => playAudio(q.options.find(o => o.id === q.correctOptionId)?.text || q.question)} 
+                  style={{ background: "none", border: "none", cursor: "pointer", fontSize: "1.2rem" }}
+                  title="Play pronunciation"
+                >
+                  🔊
+                </button>
+              </>
+            )}
           </div>
         )}
       </div>

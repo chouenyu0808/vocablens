@@ -8,7 +8,7 @@ export async function POST(req: Request) {
   try {
     const { excludeIds } = await req.json();
 
-    // Fetch ALL words to use as distractors
+    // Fetch ALL words to use as distractors and to check due dates
     const allWords = await prisma.word.findMany();
     const availableWords = allWords.filter(w => !(excludeIds || []).includes(w.id));
 
@@ -19,8 +19,17 @@ export async function POST(req: Request) {
       );
     }
 
-    // Pick 1 random target word
-    const targetWord = availableWords[Math.floor(Math.random() * availableWords.length)];
+    // Try to pick a word that is due for review
+    const now = new Date();
+    let dueWords = availableWords.filter(w => w.nextReviewDate <= now);
+    
+    // If no words are due, just pick any available word
+    if (dueWords.length === 0) {
+      dueWords = availableWords;
+    }
+
+    // Pick 1 random target word from the due list
+    const targetWord = dueWords[Math.floor(Math.random() * dueWords.length)];
 
     // Get 10 random other words from the DB to use as potential distractors
     const otherWords = allWords.filter(w => w.id !== targetWord.id).sort(() => 0.5 - Math.random()).slice(0, 10);

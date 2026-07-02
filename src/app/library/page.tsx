@@ -24,6 +24,14 @@ export default function LibraryPage() {
       });
   }, []);
 
+  const playAudio = (text: string) => {
+    if ("speechSynthesis" in window) {
+      const utterance = new SpeechSynthesisUtterance(text);
+      utterance.lang = "en-US";
+      window.speechSynthesis.speak(utterance);
+    }
+  };
+
   return (
     <main className="app-container animate-fade-in">
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "24px" }}>
@@ -46,8 +54,15 @@ export default function LibraryPage() {
             <div key={w.id} className="glass-panel" style={{ padding: "20px", display: "flex", flexDirection: "column", justifyContent: "space-between" }}>
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "12px" }}>
                 <div>
-                  <div style={{ fontWeight: "bold", fontSize: "1.4rem", color: "var(--accent-color)" }}>
+                  <div style={{ fontWeight: "bold", fontSize: "1.4rem", color: "var(--accent-color)", display: "flex", alignItems: "center", gap: "8px" }}>
                     {w.word}
+                    <button 
+                      onClick={() => playAudio(w.word)} 
+                      style={{ background: "none", border: "none", cursor: "pointer", fontSize: "1.2rem", padding: 0 }}
+                      title="Play pronunciation"
+                    >
+                      🔊
+                    </button>
                   </div>
                   {w.pronunciation && (
                     <div style={{ color: "var(--text-secondary)", fontSize: "0.95rem", marginTop: "4px" }}>
