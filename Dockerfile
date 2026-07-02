@@ -1,9 +1,11 @@
-# Use Node.js 20 alpine image as base
-FROM node:20-alpine AS base
+# Use Node.js 20 slim image as base for better Prisma compatibility
+FROM node:20-slim AS base
+
+# Install OpenSSL for Prisma
+RUN apt-get update -y && apt-get install -y openssl
 
 # Install dependencies only when needed
 FROM base AS deps
-RUN apk add --no-cache libc6-compat
 WORKDIR /app
 COPY package.json package-lock.json ./
 RUN npm ci
@@ -35,10 +37,7 @@ COPY --from=builder /app/public ./public
 COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
 COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
 
-# Note: For production with Prisma, you should use a managed database (like Cloud SQL or Supabase).
-# SQLite will not persist data across container restarts in Cloud Run.
 COPY --from=builder /app/prisma ./prisma
-COPY --from=builder /app/dev.db ./dev.db 
 
 USER nextjs
 
